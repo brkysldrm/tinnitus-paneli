@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doktor Paneli</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <div class="container-fluid justify-content-between">
+        <a class="navbar-brand fw-bold" href="#">Tinnitus Paneli</a>
+        <div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+<!-- İçerik -->
+<div class="container">
+    <h2 class="mb-4">Dr. {{ user.name }}</h2>
+
+    <!-- Geri Bildirim -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Hastalar Kartı -->
+    <div class="card p-4 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Hastalarınız</h4>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#hastaEkleModal">
+                + Yeni Hasta
+            </button>
+        </div>
+        {% if hastalar %}
+            <ul class="list-group">
+                {% for hasta in hastalar %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ hasta.name }}</strong> ({{ hasta.email }})
+                        </div>
+                        <a href="/hasta_anketleri/{{ hasta.id }}" class="btn btn-sm btn-outline-primary">Anketleri Gör</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Henüz tanımlı hastanız bulunmamaktadır.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Hasta Ekle Modal -->
+<div class="modal fade" id="hastaEkleModal" tabindex="-1" aria-labelledby="hastaEkleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/doktor/hasta_ekle">
+        <div class="modal-header">
+          <h5 class="modal-title" id="hastaEkleModalLabel">Yeni Hasta Ekle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Ad Soyad</label>
+            <input name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Şifre</label>
+            <input name="password" type="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Doktor</label>
+            <input class="form-control" value="{{ user.name }}" readonly>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+          <button type="submit" class="btn btn-primary">Ekle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

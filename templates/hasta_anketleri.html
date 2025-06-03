@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ hasta.name }} Anketleri</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <div class="container-fluid justify-content-between">
+        <a class="navbar-brand" href="#">Tinnitus Paneli</a>
+        <div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="mb-4">{{ hasta.name }} – Anket Sonuçları</h2>
+
+    {% if anketler %}
+        {% for anket in anketler %}
+            <div class="card my-3 shadow-sm">
+                <div class="card-header">
+                    <strong>{{ anket.anket_adi }}</strong>
+                    <span class="text-muted float-end">{{ anket.tarih.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for item in anket.sorular %}
+                            <li class="list-group-item">
+                                <strong>{{ item.soru }}</strong><br>
+                                {{ item.cevap }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Bu hastaya ait anket bulunmamaktadır.</p>
+    {% endif %}
+
+    <div class="text-start mt-4">
+        <a href="/doktor" class="btn btn-outline-secondary">← Geri</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

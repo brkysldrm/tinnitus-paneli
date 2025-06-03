@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anket Düzenle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+<div class="container">
+    <h2 class="mb-4">Anket Düzenle – {{ anket.baslik }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <h5>Mevcut Sorular</h5>
+        {% for soru in sorular %}
+            <div class="border p-3 mb-3 rounded">
+                <label>Soru Metni</label>
+                <input type="text" name="metin_{{ soru.id }}" value="{{ soru.metin }}" class="form-control mb-2" required>
+
+                <label>Soru Tipi</label>
+                <select name="tip_{{ soru.id }}" class="form-select mb-2">
+                    <option value="text" {% if soru.tip == 'text' %}selected{% endif %}>Metin</option>
+                    <option value="choice" {% if soru.tip == 'choice' %}selected{% endif %}>Tek Seçim</option>
+                    <option value="multi_choice" {% if soru.tip == 'multi_choice' %}selected{% endif %}>Çoklu Seçim</option>
+                </select>
+
+                <label>Seçenekler (virgülle ayır)</label>
+                <input type="text" name="secenekler_{{ soru.id }}" value="{{ soru.secenekler or '' }}" class="form-control mb-2">
+
+                <label>Sıra</label>
+                <input type="number" name="sira_{{ soru.id }}" value="{{ soru.sira }}" class="form-control">
+
+                <a href="/admin/soru_sil/{{ soru.id }}" class="btn btn-sm btn-danger mt-2"
+                   onclick="return confirm('Bu soruyu silmek istediğinize emin misiniz?');">Sil</a>
+            </div>
+        {% endfor %}
+
+        <h5>Yeni Soru Ekle</h5>
+        <div class="border p-3 mb-3 rounded">
+            <label>Yeni Soru Metni</label>
+            <input type="text" name="yeni_metin" class="form-control mb-2">
+
+            <label>Tip</label>
+            <select name="yeni_tip" class="form-select mb-2">
+                <option value="text">Metin</option>
+                <option value="choice">Tek Seçim</option>
+                <option value="multi_choice">Çoklu Seçim</option>
+            </select>
+
+            <label>Seçenekler (virgülle ayır)</label>
+            <input type="text" name="yeni_secenekler" class="form-control mb-2">
+
+            <label>Sıra</label>
+            <input type="number" name="yeni_sira" class="form-control mb-3">
+
+            <!-- ✅ Yeni Soru ekleme butonu -->
+            <button type="submit" name="action" value="ekle" class="btn btn-success w-100 mb-2">Yeni Soruyu Ekle</button>
+        </div>
+
+        <!-- ✅ Tüm değişiklikleri kaydet -->
+        <button type="submit" name="action" value="kaydet" class="btn btn-primary w-100">Tüm Değişiklikleri Kaydet</button>
+    </form>
+
+    <a href="/admin" class="btn btn-link mt-3">← Geri Dön</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hasta Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <div class="container-fluid justify-content-between">
+        <a class="navbar-brand fw-bold" href="#">Tinnitus Paneli</a>
+        <div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+<!-- İçerik -->
+<div class="container">
+    <h2 class="mb-4">Hoş geldiniz, {{ user.name }}</h2>
+
+    <!-- Doldurulabilir Anketler -->
+    <div class="mb-5">
+        <h4 class="mb-3">📋 Doldurabileceğiniz Anketler</h4>
+        {% if anketler %}
+            <div class="row">
+                {% for anket in anketler %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title">{{ anket.baslik }}</h5>
+                                <div class="text-end mt-auto">
+                                    <a href="/anket_doldur/{{ anket.id }}" class="btn btn-primary">Doldur</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-muted">Size atanmış doldurulabilir anket bulunmamaktadır.</div>
+        {% endif %}
+    </div>
+
+    <!-- Geçmiş Anketler -->
+    <div>
+        <h4 class="mb-3">✅ Daha Önce Doldurduğunuz Anketler</h4>
+        {% if gecmis_anketler %}
+            {% for anket in gecmis_anketler %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <strong>{{ anket.anket_adi }}</strong> —
+                        <small>{{ anket.tarih.strftime('%d.%m.%Y %H:%M') }}</small>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for s in anket.icerik %}
+                                <li class="list-group-item">
+                                    <strong>{{ s.soru }}</strong><br>
+                                    {{ s.cevap }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-muted">Henüz anket doldurmadınız.</div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
