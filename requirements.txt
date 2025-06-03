@@ -1,7 +1,7 @@
 # Query: 
 # ContextLines: 1
 
-flask
-flask_sqlalchemy
-flask_login
-flask_wtf
+Flask
+Flask-SQLAlchemy
+Flask-Login
+gunicorn
