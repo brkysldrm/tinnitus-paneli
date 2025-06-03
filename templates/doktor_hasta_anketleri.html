@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ hasta.name }} - Anket Sonuçları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <div class="container-fluid justify-content-between">
+        <a class="navbar-brand fw-bold" href="#">Tinnitus Paneli</a>
+        <div>
+            <a href="/doktor" class="btn btn-outline-secondary btn-sm">← Geri</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="mb-4">{{ hasta.name }} – Anket ve Odyolojik Sonuçlar</h2>
+
+    <div class="accordion" id="hastaAccordion">
+
+        <!-- Odyolojik Bilgiler -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOdyolojik">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOdyolojik" aria-expanded="true" aria-controls="collapseOdyolojik">
+                    🦻 Odyolojik Bilgiler
+                </button>
+            </h2>
+            <div id="collapseOdyolojik" class="accordion-collapse collapse show" aria-labelledby="headingOdyolojik" data-bs-parent="#hastaAccordion">
+                <div class="accordion-body">
+                    {% if odyolojik_bilgiler %}
+                        {% for bilgi in odyolojik_bilgiler %}
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header d-flex justify-content-between">
+                                    <strong>{{ bilgi.tarih.strftime('%d.%m.%Y %H:%M') }}</strong>
+                                </div>
+                                <div class="card-body">
+
+                                    <h6 class="text-primary">Saf Ses Odyometrisi</h6>
+                                    <table class="table table-sm table-bordered text-center">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th></th>
+                                                {% for f in ["125", "250", "500", "1000", "2000", "4000", "6000", "8000"] %}
+                                                    <th>{{ f }} Hz</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for kanal in ["sag_hava", "sol_hava", "sag_kemik", "sol_kemik"] %}
+                                                <tr>
+                                                    <th>{{ kanal.replace("_", " ").title() }}</th>
+                                                    {% for f in ["125", "250", "500", "1000", "2000", "4000", "6000", "8000"] %}
+                                                        <td>{{ bilgi[kanal][f] }}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    <h6 class="text-success mt-3">Konuşma Odyometrisi</h6>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><strong>SRT:</strong> Sağ: {{ bilgi.srt_sag }}, Sol: {{ bilgi.srt_sol }}</li>
+                                        <li class="list-group-item"><strong>MCL:</strong> Sağ: {{ bilgi.mcl_sag }}, Sol: {{ bilgi.mcl_sol }}</li>
+                                        <li class="list-group-item"><strong>SDS (%):</strong> Sağ: {{ bilgi.sds_sag }}, Sol: {{ bilgi.sds_sol }}</li>
+                                        <li class="list-group-item"><strong>UCL:</strong> Sağ: {{ bilgi.ucl_sag }}, Sol: {{ bilgi.ucl_sol }}</li>
+                                    </ul>
+
+                                    <h6 class="text-secondary mt-3">Eşleme ve Maskeleme</h6>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><strong>Frekans Eşleme:</strong> Sağ: {{ bilgi.frekans_esleme_sag }}, Sol: {{ bilgi.frekans_esleme_sol }}</li>
+                                        <li class="list-group-item"><strong>Gürlük Eşleme:</strong> Sağ: {{ bilgi.gurluk_esleme_sag }}, Sol: {{ bilgi.gurluk_esleme_sol }}</li>
+                                        <li class="list-group-item"><strong>Minimum Maskeleme:</strong> Sağ: {{ bilgi.minimum_maskeleme_sag }}, Sol: {{ bilgi.minimum_maskeleme_sol }}</li>
+                                        <li class="list-group-item"><strong>Rezidüel İnhibisyon:</strong> Sağ: {{ bilgi.reziduel_inhibisyon_sag }}, Sol: {{ bilgi.reziduel_inhibisyon_sol }}</li>
+                                    </ul>
+
+                                    <p class="mt-3"><strong>Notlar:</strong> {{ bilgi.notlar or "(not yok)" }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Bu hastaya ait odyolojik bilgi bulunmamaktadır.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Anket Sonuçları -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAnketler">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnketler" aria-expanded="false" aria-controls="collapseAnketler">
+                    📋 Anket Sonuçları
+                </button>
+            </h2>
+            <div id="collapseAnketler" class="accordion-collapse collapse" aria-labelledby="headingAnketler" data-bs-parent="#hastaAccordion">
+                <div class="accordion-body">
+                    {% if anketler %}
+                        <div class="accordion" id="anketlerAltAccordion">
+                            {% for anket in anketler %}
+                                <div class="accordion-item mb-2 shadow-sm">
+                                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                            {{ anket.anket_adi }} – {{ anket.tarih.strftime('%d.%m.%Y %H:%M') }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#anketlerAltAccordion">
+                                        <div class="accordion-body">
+                                            {% if anket.puan is not none %}
+                                                <div class="alert alert-info mb-3">
+                                                    <strong>THI Puanı:</strong> {{ anket.puan }} / 100
+                                                </div>
+                                            {% endif %}
+
+                                            {% if anket.icerik and anket.icerik|selectattr("cevap")|list %}
+                                                <ul class="list-group">
+                                                    {% for s in anket.icerik %}
+                                                        {% if s.cevap %}
+                                                            <li class="list-group-item">
+                                                                <strong>{{ s.soru }}</strong><br>
+                                                                {{ s.cevap }}
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <div class="alert alert-warning mb-0">
+                                                    Bu ankete ait cevap bulunmamaktadır.
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-0">Bu hastaya ait doldurulmuş anket bulunmamaktadır.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

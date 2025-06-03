@@ -48,7 +48,10 @@
                         <div>
                             <strong>{{ hasta.name }}</strong> ({{ hasta.email }})
                         </div>
-                        <a href="/hasta_anketleri/{{ hasta.id }}" class="btn btn-sm btn-outline-primary">Anketleri Gör</a>
+                        <div class="btn-group">
+                            <a href="{{ url_for('doktor_hasta_anketleri', hasta_id=hasta.id) }}" class="btn btn-sm btn-outline-primary">Anketleri Gör</a>
+                            <a href="{{ url_for('odyolojik_bilgi_ekle', hasta_id=hasta.id) }}" class="btn btn-sm btn-outline-secondary">Odyolojik Bilgi Ekle</a>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>

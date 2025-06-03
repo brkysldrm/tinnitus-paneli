@@ -65,19 +65,13 @@
     </div>
 
     <!-- Yeni Anket Oluştur (Dinamik) -->
-    <div class="card p-4 mb-4">
-        <h4 class="mb-3">Yeni Anket Oluştur</h4>
-        <form method="POST" action="/admin/anket_yeni">
-            <input type="text" name="baslik" class="form-control mb-3" placeholder="Anket Başlığı" required>
-
-            <div id="soru-container">
-                <!-- Sorular buraya eklenecek -->
-            </div>
-
-            <button type="button" class="btn btn-outline-secondary mb-3" onclick="soruEkle()">+ Soru Ekle</button>
-            <button type="submit" class="btn btn-primary w-100">Anketi Kaydet</button>
-        </form>
-    </div>
+<div class="card p-4 mb-4">
+    <h4 class="mb-3">Yeni Anket Oluştur</h4>
+    <form method="POST" action="/admin/anket_yeni">
+        <input type="text" name="baslik" class="form-control mb-3" placeholder="Anket Başlığı" required>
+        <button type="submit" class="btn btn-primary w-100">Anketi Kaydet</button>
+    </form>
+</div>
 
     <!-- Tanımlı Anketler -->
     <div class="card p-3 mb-4">
@@ -187,11 +181,12 @@ function soruEkle() {
             <input type="text" name="soru_metin_${soruSayac}" class="form-control mb-2" required>
 
             <label class="form-label">Soru Tipi</label>
-            <select name="soru_tip_${soruSayac}" class="form-select mb-2" onchange="secenekAlaniniGoster(this, ${soruSayac})">
-                <option value="text">Açık Uçlu</option>
-                <option value="choice">Tek Seçim</option>
-                <option value="multi_choice">Çoklu Seçim</option>
+            <select name="soru_tip_0" class="form-select">
+             <option value="text">Metin</option>
+             <option value="choice">Tek Seçim</option>
+             <option value="multi_choice">Çoklu Seçim</option>
             </select>
+
 
             <div id="secenek-alani-${soruSayac}" style="display: none;">
                 <label class="form-label">Seçenekler (virgülle ayırın)</label>
@@ -205,7 +200,7 @@ function soruEkle() {
 
 function secenekAlaniniGoster(selectElement, index) {
     const alan = document.getElementById(`secenek-alani-${index}`);
-    alan.style.display = (selectElement.value === "choice" || selectElement.value === "multi_choice") ? "block" : "none";
+    alan.style.display = (tip === "choice" || tip === "multi_choice" || tip === "score") ? "block" : "none";
 }
 </script>
 
